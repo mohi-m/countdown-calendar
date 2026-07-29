@@ -2,31 +2,55 @@ export type Memory = {
   date: string
   title: string
   note: string
-  imageUrl: string
-  alt: string
+  imageUrl?: string
+  alt?: string
+  videoUrl?: string
 }
+
+type MediaConfig = Record<string, {
+  fileId: string
+  type?: 'image' | 'video'
+  alt?: string
+}>
 
 export const reunionDate = '2026-08-21T21:00:00-07:00'
 
-const photos = [
-  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1400&q=85',
-  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1400&q=85',
-  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85',
-  'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=1400&q=85',
-  'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1400&q=85',
-]
+function readMediaConfig(): MediaConfig {
+  const value = import.meta.env.VITE_MEDIA_CONFIG
+  if (!value) return {}
+
+  try {
+    return JSON.parse(value) as MediaConfig
+  } catch {
+    console.error('VITE_MEDIA_CONFIG must be valid JSON.')
+    return {}
+  }
+}
+
+const mediaConfig = readMediaConfig()
+
+function getMedia(date: string): Pick<Memory, 'imageUrl' | 'videoUrl' | 'alt'> {
+  const media = mediaConfig[date]
+  if (!media?.fileId) return {}
+
+  return {
+    imageUrl: `https://drive.google.com/thumbnail?id=${media.fileId}&sz=w1600`,
+    videoUrl: media.type === 'video' ? `https://drive.google.com/file/d/${media.fileId}/preview` : undefined,
+    alt: media.alt ?? `Memory for ${date}`,
+  }
+}
 
 const days = [
   ['2026-07-28', 'The first page', 'A little corner of the internet, counting every sunrise until I am with you.'],
-  ['2026-07-29', 'That laugh', 'The one I can hear perfectly, even with a whole country between us.'],
+  ['2026-07-29', 'Ze Flower', 'Cant wait to see my flower in her full glory. Flower hairrr.. 💮'],
   ['2026-07-30', 'Our kind of magic', 'Somehow the ordinary moments with you become the ones I keep forever.'],
-  ['2026-07-31', 'July, wrapped', 'One month closer. One month full of calls, stories, and choosing each other.'],
-  ['2026-08-01', 'Hello, August', 'This is the month. The distance finally has an expiration date.'],
-  ['2026-08-02', 'A favorite frame', 'Replace this with a photo that instantly takes us back.'],
-  ['2026-08-03', 'Three little things', 'Your kindness, your curiosity, and the way you make anywhere feel like home.'],
-  ['2026-08-04', 'NYC is waiting', 'Every street here has heard about you by now.'],
-  ['2026-08-05', 'LA is calling', 'Soon I will trade this screen for your hand in mine.'],
-  ['2026-08-06', 'Our soundtrack', 'Add the song we always come back to right here.'],
+  ['2026-07-31', 'July, wrapped', 'To close out this July, I pulled something out from last july. The best fireworks we have ever seen.'],
+  ['2026-08-01', 'Hello, August', 'Starting my second favorite month with sassy Somu. Just look at her 😍'],
+  ['2026-08-02', 'Baby', 'Baby Momo say Hiiii.. He would be soo excited to meet you.'],
+  ['2026-08-03', 'Goofballzooo', 'That Rooling on the floor launging. Doggo jaisa.'],
+  ['2026-08-04', 'And I got influenced', 'Hello there from a fellow goofball. And no I am not changing back.'],
+  ['2026-08-05', 'Fun activites', 'Even during tough times, we had a lot of fun. As long as I am with you, there are no tough times.'],
+  ['2026-08-06', 'Our soundtrack', 'I want it that wayy....   Damn tho, we looked soo different back then.'],
   ['2026-08-07', 'Two weeks', 'Fourteen more sleeps. We have done harder things than fourteen sleeps.'],
   ['2026-08-08', 'A tiny time capsule', 'A memory of us, saved for exactly today.'],
   ['2026-08-09', 'Sunday softness', 'The slow calls, the comfortable silences, the feeling of being known.'],
@@ -44,10 +68,10 @@ const days = [
   ['2026-08-21', 'Today', 'No more countdown. Tonight, I am coming home to you.'],
 ] as const
 
-export const memories: Memory[] = days.map(([date, title, note], index) => ({
+
+export const memories: Memory[] = days.map(([date, title, note]) => ({
   date,
   title,
   note,
-  imageUrl: photos[index % photos.length],
-  alt: `Placeholder for our memory on ${date}`,
+  ...getMedia(date),
 }))

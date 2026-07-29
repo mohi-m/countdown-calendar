@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Eye, EyeOff, Heart, LockKeyhole, MapPin, Sparkles, X } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Heart, LockKeyhole, MapPin, Play, Sparkles, X } from "lucide-react";
 import "./App.css";
 import { memories, reunionDate, type Memory } from "./memories";
 
@@ -125,7 +125,19 @@ function MemoryModal({ memory, onClose }: { memory: Memory; onClose: () => void 
         <button className="modal-close icon-button" onClick={onClose} aria-label="Close memory">
           <X />
         </button>
-        <img src={memory.imageUrl} alt={memory.alt} />
+        {memory.videoUrl ? (
+          <iframe
+            className="memory-video"
+            src={memory.videoUrl}
+            title={`Video: ${memory.title}`}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        ) : memory.imageUrl ? (
+          <img src={memory.imageUrl} alt={memory.alt} />
+        ) : (
+          <div className="memory-blank" aria-hidden="true" />
+        )}
         <div className="modal-copy">
           <p>{new Date(`${memory.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric" })}</p>
           <h2 id="memory-title">{memory.title}</h2>
@@ -143,6 +155,7 @@ function Calendar() {
   const [countdown, setCountdown] = useState(getCountdown);
   const [selected, setSelected] = useState<Memory | null>(null);
   const today = getLosAngelesDate();
+  const unlockAll = import.meta.env.DEV && new URLSearchParams(window.location.search).get("unlockAll") === "1";
 
   useEffect(() => {
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000);
@@ -189,20 +202,25 @@ function Calendar() {
         </div>
         <div className="memory-grid">
           {memories.map((memory, index) => {
-            const unlocked = memory.date <= today;
+            const unlocked = unlockAll || memory.date <= today;
             return (
               <button
-                className={`memory-card ${unlocked ? "unlocked" : "locked"}`}
+                className={`memory-card ${unlocked ? "unlocked" : "locked"} ${memory.imageUrl ? "has-media" : "no-media"}`}
                 key={memory.date}
                 onClick={() => unlocked && setSelected(memory)}
                 disabled={!unlocked}
               >
-                <img src={memory.imageUrl} alt="" loading="lazy" />
+                {unlocked && memory.imageUrl && <img src={memory.imageUrl} alt="" loading="lazy" />}
                 <span className="day-number">{String(index + 1).padStart(2, "0")}</span>
                 <span className="card-date">
                   {new Date(`${memory.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </span>
                 <span className="card-title">{unlocked ? memory.title : "A memory waits here"}</span>
+                {unlocked && memory.videoUrl && (
+                  <span className="play-badge" aria-label="Video memory">
+                    <Play size={16} fill="currentColor" />
+                  </span>
+                )}
                 {!unlocked && (
                   <span className="lock">
                     <LockKeyhole size={17} />

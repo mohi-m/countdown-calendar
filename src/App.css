@@ -198,7 +198,7 @@
   color: #fff;
   background:
     linear-gradient(90deg, rgba(20, 38, 34, 0.85) 0%, rgba(20, 38, 34, 0.47) 54%, rgba(20, 38, 34, 0.15)),
-    url("https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=2000&q=88") center 42% /
+    url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=88") center 48% /
       cover;
 }
 .calendar-hero nav {
@@ -343,6 +343,13 @@
 .memory-card.unlocked {
   cursor: pointer;
 }
+.memory-card.unlocked.no-media {
+  color: #344640;
+  background: #c9cbc7;
+}
+.memory-card.no-media::after {
+  background: rgba(255, 255, 255, 0.08);
+}
 .memory-card.unlocked:hover img {
   transform: scale(1.055);
 }
@@ -353,10 +360,6 @@
 .memory-card.locked {
   color: #344640;
   background: #d8d2c3;
-}
-.memory-card.locked img {
-  filter: grayscale(1);
-  opacity: 0.13;
 }
 .memory-card.locked::after {
   background: repeating-linear-gradient(135deg, transparent 0 8px, rgba(44, 64, 59, 0.04) 8px 9px);
@@ -387,6 +390,19 @@
   place-items: center;
   border: 1px solid rgba(52, 70, 64, 0.35);
   border-radius: 50%;
+}
+.play-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  background: rgba(24, 48, 43, 0.72);
+  backdrop-filter: blur(6px);
 }
 footer {
   min-height: 170px;
@@ -423,11 +439,20 @@ footer p {
   background: #fffdf7;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
-.memory-modal > img {
+.memory-modal > img,
+.memory-modal > iframe {
   width: 100%;
   height: 100%;
   min-height: 520px;
+  border: 0;
+  background: #172521;
+}
+.memory-modal > img {
   object-fit: cover;
+}
+.memory-modal > .memory-blank {
+  min-height: 520px;
+  background: #c9cbc7;
 }
 .modal-copy {
   padding: 62px 48px;
@@ -509,7 +534,12 @@ footer p {
   .memory-modal {
     grid-template-columns: 1fr;
   }
-  .memory-modal > img {
+  .memory-modal > img,
+  .memory-modal > iframe {
+    min-height: 0;
+    height: min(47vh, 400px);
+  }
+  .memory-modal > .memory-blank {
     min-height: 0;
     height: min(47vh, 400px);
   }
@@ -596,6 +626,12 @@ footer p {
     right: 10px;
     width: 30px;
     height: 30px;
+  }
+  .play-badge {
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
   }
   .modal-backdrop {
     padding: 10px;

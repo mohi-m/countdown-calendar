@@ -32,6 +32,8 @@ jobs:
           CALENDAR_PASSWORD: ${{ secrets.CALENDAR_PASSWORD }}
         run: echo "VITE_PASSWORD_HASH=$(printf '%s' "$CALENDAR_PASSWORD" | sha256sum | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
       - run: npm run build
+        env:
+          VITE_MEDIA_CONFIG: ${{ secrets.CALENDAR_MEDIA }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
