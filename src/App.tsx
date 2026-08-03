@@ -4,16 +4,25 @@ import "./App.css";
 import { memories, reunionDate, type Memory } from "./memories";
 
 const fallbackPasswordHash = "860ae3bcabf558874f29b5e88035171be6460796321b319272fcc3f0417ffd9a";
+const pacificTimeZone = "America/Los_Angeles";
 
 function getLosAngelesDate() {
   const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Los_Angeles",
+    timeZone: pacificTimeZone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date());
   const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
   return `${value.year}-${value.month}-${value.day}`;
+}
+
+function formatPacificDate(date: string, month: "short" | "long") {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: pacificTimeZone,
+    month,
+    day: "numeric",
+  }).format(new Date(`${date}T12:00:00Z`));
 }
 
 async function sha256(value: string) {
@@ -139,7 +148,7 @@ function MemoryModal({ memory, onClose }: { memory: Memory; onClose: () => void 
           <div className="memory-blank" aria-hidden="true" />
         )}
         <div className="modal-copy">
-          <p>{new Date(`${memory.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric" })}</p>
+          <p>{formatPacificDate(memory.date, "long")}</p>
           <h2 id="memory-title">{memory.title}</h2>
           <blockquote>{memory.note}</blockquote>
           <span>
@@ -212,9 +221,7 @@ function Calendar() {
               >
                 {unlocked && memory.imageUrl && <img src={memory.imageUrl} alt="" loading="lazy" />}
                 <span className="day-number">{String(index + 1).padStart(2, "0")}</span>
-                <span className="card-date">
-                  {new Date(`${memory.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </span>
+                <span className="card-date">{formatPacificDate(memory.date, "short")}</span>
                 <span className="card-title">{unlocked ? memory.title : "A memory waits here"}</span>
                 {unlocked && memory.videoUrl && (
                   <span className="play-badge" aria-label="Video memory">
