@@ -13,7 +13,7 @@ type MediaConfig = Record<string, {
   alt?: string
 }>
 
-export const reunionDate = '2026-08-21T21:00:00-07:00'
+export const reunionDate = '2026-08-21T23:59:59-07:00'
 
 function readMediaConfig(): MediaConfig {
   const value = import.meta.env.VITE_MEDIA_CONFIG

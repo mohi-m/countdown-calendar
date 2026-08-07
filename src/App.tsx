@@ -179,7 +179,7 @@ function Calendar() {
             <Heart size={17} fill="currentColor" /> Until Us
           </span>
           <span className="route">
-            <MapPin size={15} /> NYC <i /> LA
+            <MapPin size={15} /> NYC <span aria-hidden="true">→</span> LA
           </span>
         </nav>
         <div className="hero-copy">
