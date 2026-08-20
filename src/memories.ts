@@ -65,7 +65,7 @@ const days = [
   ['2026-08-18', 'Three days', 'We both smol babies in this big big world. But I am so glad we are smol babies together.'],
   ['2026-08-19', 'Two sides', 'Hotty booby and goofy momo. When did we decide to pick sides. But I think its more like I cant be hottie so I just pick the goofy side.'],
   ['2026-08-20', 'Tomorrow', 'One last sleep with a continent in the middle. The only thing that I can bare in the middle is a table in a restaurant. And maybe even that is too much.'],
-  ['2026-08-21', 'Today', 'No more countdown. Tonight, I am coming home to you.'],
+  ['2026-08-21', 'Today', 'No more countdown. Tonight, I am coming home to you. A little over 2 years ago we started chapter 1 of out US life, today marks the beggining of chapter 2! '],
 ] as const
 
 
